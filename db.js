@@ -7,7 +7,21 @@ const sequelize = new Sequelize("product_db", "dev_user", "dev_password", {
     dialect:"postgres",
     logging:false,
 });
-
+const dbName = process.env.PGDATABASE;
+const dbUser = process.env.PGUSER;
+const dbPassword = process.env.PGPASSWORD;
+const dbURL = process.env.PGHOST
+const sequelize = new sequelize(dbName, dbUser, dbPassword, {
+    host: dbURL,
+    dialect: "postgres",
+    logging: false,
+    port: 5439,
+    dialectOptions: {
+        ssl: {
+            require: true, rejectUnauthorized: false
+        }
+    }
+});
 // define database schema
 const Product = sequelize.define("Product", {
     id: {
