@@ -1,6 +1,11 @@
 import { Sequelize, DataTypes } from "sequelize";
 import dotenv from "dotenv";
 dotenv.config();
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is not defined in the environment variables.");
+}
 // database connection
 // const sequelize = new Sequelize("product_db", "dev_user", "dev_password", {
 //     host:"localhost",
@@ -9,15 +14,13 @@ dotenv.config();
 //     logging:false,
 // });
 
-const dbName = process.env.PGDATABASE;
-const dbUser = process.env.PGUSER;
-const dbPassword = process.env.PGPASSWORD;
-const dbURL = process.env.PGHOST_UNPOOLED;
-const PORT = process.env.PORT
+//const dbName = process.env.PGDATABASE;
+//const dbUser = process.env.PGUSER;
+//const dbPassword = process.env.PGPASSWORD;
+//const dbURL = process.env.PGHOST_UNPOOLED;
+//const PORT = process.env.PORT
 
-const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-  host: dbURL,
-  port: PORT,
+const sequelize = new Sequelize(databaseUrl, {
   dialect: "postgres",
   logging: false,
   dialectOptions: {
