@@ -1,26 +1,23 @@
 import { Sequelize, DataTypes } from "sequelize";
+// database connection
 import dotenv from "dotenv";
 dotenv.config();
-const databaseUrl = process.env.DATABASE_URL;
+//const sequelize = new Sequelize("product_db", "dev_user", "dev_password", {
+// host: "localhost",
+//  port: 5439,
+// dialect: "postgres",
+// logging: false,
+//});
 
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not defined in the environment variables.");
-}
-// database connection
-// const sequelize = new Sequelize("product_db", "dev_user", "dev_password", {
-//     host:"localhost",
-//     port:5439,
-//     dialect:"postgres",
-//     logging:false,
-// });
+const dbName = process.env.PGDATABASE;
+const dbUser = process.env.PGUSER;
+const dbPassword = process.env.PGPASSWORD;
+const dbURL = process.env.PGHOST_UNPOOLED;
+const dbPort = process.env.PGPORT || 5432;
 
-//const dbName = process.env.PGDATABASE;
-//const dbUser = process.env.PGUSER;
-//const dbPassword = process.env.PGPASSWORD;
-//const dbURL = process.env.PGHOST_UNPOOLED;
-//const PORT = process.env.PORT
-
-const sequelize = new Sequelize(databaseUrl, {
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbURL,
+  port: dbPort,
   dialect: "postgres",
   logging: false,
   dialectOptions: {
@@ -32,30 +29,30 @@ const sequelize = new Sequelize(databaseUrl, {
 });
 // define database schema
 const Product = sequelize.define("Product", {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey:true,
-    },
-    name:{
-        type:DataTypes.STRING,
-        allowNull: false,
-    },
-    price: {
-        type: DataTypes.FLOAT,
-        allowNull:false
-    },
-})
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+});
 
-const connectDB = async () =>{
-    try {
-        await sequelize.authenticate();
-        console.log("Connected to PostgreSQL!!");
-        await sequelize.sync({ alter:true });
-        console.log("Table syncronize !");
-    } catch (error) {
-        console.error("Connection failed", error);
-        process.exit(1);
-    }
+const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connected to PostgreSQL!!");
+    await sequelize.sync({ alter: true });
+    console.log("Table syncronize !");
+  } catch (error) {
+    console.error("Connection failed", error);
+    process.exit(1);
+  }
 };
 export { sequelize, Product, connectDB };
